@@ -49,7 +49,7 @@ function love.update(dt)
         p:moveRight()
         animation:flip(false, false)
     end
-    if love.keyboard.isDown("x") then
+    if love.keyboard.isDown(" ") or love.keyboard.isDown("up") then
         p:jump()
     end
 
