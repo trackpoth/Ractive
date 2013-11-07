@@ -1,7 +1,8 @@
-require "player/player"
+require "player/Player"
 require "SpriteAnimation"
 require "camera"
 
+<<<<<<< HEAD
 function love.load()
 	love.graphics.setMode(1024, 768)
 	love.graphics.setCaption("Ractive PreAlpha 0.02")
@@ -9,6 +10,13 @@ function love.load()
     	width = g.getWidth()
     	height = g.getHeight()
     	g.setBackgroundColor(0, 137, 255)
+=======
+function love.load()	
+    g = love.graphics
+    width = g.getWidth()
+    height = g.getHeight()
+    g.setBackgroundColor(0, 137, 255)
+>>>>>>> parent of 7aba464... PreAlpha 0.02
 	
 	loader = require("AdvTiledLoader.Loader")
     	loader.path = "maps/"
@@ -85,10 +93,16 @@ function love.draw()
     	camera:unset()
 	
 	g.setColor(255, 255, 255)
+<<<<<<< HEAD
 	g.print("Left and Right arrows to move, X to jump", 5, 5)
     	g.print("Player coordinates: ("..x..","..y..")", 5, 20)
     	g.print("Current state: "..p.state, 5, 35)
 	g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
+=======
+    g.print("Player coordinates: ("..x..","..y..")", 5, 5)
+    g.print("Current state: "..p.state, 5, 20)
+	love.graphics.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
+>>>>>>> parent of 7aba464... PreAlpha 0.02
 end
  
 function love.keyreleased(key)
