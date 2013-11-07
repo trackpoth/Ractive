@@ -4,36 +4,35 @@
 -- imageString: the path of the image to be loaded from.
 -- width, height: the dimensions of the individual sprites.
 -- numRows, numFrames: the dimensions of the source image, in tiles.
- 
-SpriteAnimation = {}
- 
+
+local SpriteAnimation = {}
+
 -- Constructor
 function SpriteAnimation:new(imageString, width, height, numRows, numFrames)
     local object = {
-    imageString = imageString,
-    spriteImage = spriteImage,
-    sprites = {},
-    height = height,
-    width = width,
-    currentFrame = 1,
-    currentRow = 1,
-    numFrames = numFrames,
-    numRows = numRows,
-    delta = 0,
-    delay = 200,
-    loop = true,
-    flipX = false,
-    flipY = false,
-    isRunning = true
+        imageString = imageString,
+        spriteImage = spriteImage,
+        sprites = {},
+        height = height,
+        width = width,
+        currentFrame = 1,
+        currentRow = 1,
+        numFrames = numFrames,
+        numRows = numRows,
+        delta = 0,
+        delay = 200,
+        loop = true,
+        flipX = false,
+        flipY = false,
+        isRunning = true,
     }
-    setmetatable(object, { __index = SpriteAnimation})
-    return object
+    return setmetatable(object, { __index = self })
 end
- 
+
 function SpriteAnimation:load(delay)
     -- Set the time between frames
     self.delay = delay
- 
+
     -- Load up our images into a table from quads, and set our SpriteRow
     self.spriteImage = love.graphics.newImage(self.imageString)
     local sourceImage = love.graphics.newImage(self.imageString)
@@ -47,33 +46,33 @@ function SpriteAnimation:load(delay)
         end
     end
 end
- 
+
 function SpriteAnimation:update(dt)
     if self.isRunning then -- skip this if animation is stopped
         -- add in our accumulated delta
         self.delta = self.delta + dt
-   
+
         -- see if it's time to advance the frame
         if self.delta >= (self.delay/1000) then
             -- if set to not loop, keep the frame at the last frame
             if (self.currentFrame == self.numFrames) and not(self.loop) then
                 self.currentFrame = self.numFrames - 1
             end
-           
+
             -- advance one frame, then reset delta counter
             self.currentFrame = (self.currentFrame % self.numFrames) + 1
             self.delta = 0
         end
     end
 end
- 
+
 function SpriteAnimation:draw(x, y)
     -- define temporary offsets for drawing
     local xScale = 1
     local yScale = 1
     local xOffset = 0
     local yOffset = 0
-   
+
     if self.flipX then
         xScale = -1
         xOffset = self.width
@@ -85,56 +84,58 @@ function SpriteAnimation:draw(x, y)
     -- draw the quad
     love.graphics.drawq(self.spriteImage, self.sprites[self.currentRow][self.currentFrame], x, y, 0, xScale, yScale, xOffset, yOffset)
 end
- 
+
 function SpriteAnimation:switch(newRow, newMax, newDelay)
     -- Optional: assign a new number of animation frames
     if newMax then
         self.numFrames = newMax
     end
-   
+
     -- Optional: assign a new delta
     if newDelay then
         self.delay = newDelay
     end
-   
+
     -- Switch to the new row
     self.currentRow = newRow
-   
+
     -- If we're beyond the maximum frame, reset
     if self.currentFrame > self.numFrames then
         self:reset()
     end
 end
- 
+
 -- Sets the animation to frame 1
 function SpriteAnimation:reset()
     self.currentFrame = 1
 end
- 
+
 -- Starts the animation
 function SpriteAnimation:start(selectFrame)
     self.isRunning = true
-   
+
     -- Optional: select the frame on which to start the animation
     if selectFrame then
         self.currentFrame = selectFrame
     end
 end
- 
+
 function SpriteAnimation:stop(selectFrame)
     self.isRunning = false
-   
+
     -- Optional: select the frame on which to stop the animation
     if selectFrame then
         self.currentFrame = selectFrame
     end
 end
- 
+
 function SpriteAnimation:flip(xIsFlipped, yIsFlipped)
     self.flipX = xIsFlipped
     self.flipY = yIsFlipped
 end
- 
+
+return SpriteAnimation
+
 --[[Copyright (c) 2012 Sean Laurvick
  
 Permission is hereby granted, free of charge, to any person obtaining a copy
