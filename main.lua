@@ -1,8 +1,10 @@
-require "player/Player"
+require "player/player"
 require "SpriteAnimation"
 require "camera"
 
-function love.load()	
+function love.load()
+	love.graphics.setMode(1024, 768)
+	love.graphics.setCaption("Ractive PreAlpha 0.02")
     g = love.graphics
     width = g.getWidth()
     height = g.getHeight()
@@ -83,9 +85,10 @@ function love.draw()
     camera:unset()
 	
 	g.setColor(255, 255, 255)
-    g.print("Player coordinates: ("..x..","..y..")", 5, 5)
-    g.print("Current state: "..p.state, 5, 20)
-	love.graphics.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
+	g.print("Left and Right arrows to move, X to jump", 5, 5)
+    g.print("Player coordinates: ("..x..","..y..")", 5, 20)
+    g.print("Current state: "..p.state, 5, 35)
+	g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
 end
  
 function love.keyreleased(key)
