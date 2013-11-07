@@ -1,4 +1,4 @@
-require "player/Player"
+require "player/player"
 require "SpriteAnimation"
 require "camera"
 
