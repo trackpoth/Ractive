@@ -6,6 +6,8 @@ local g, loader, map, camera, animation, p, gravity, delay, hasJumped
 
 function love.load()
     g = love.graphics
+	g.setMode(1024, 768)
+	g.setCaption("Ractive PreAlpha 0.03")
     width = g.getWidth()
     height = g.getHeight()
     g.setBackgroundColor(0, 137, 255)
@@ -89,7 +91,8 @@ function love.draw()
     g.setColor(255, 255, 255)
     g.print("Player coordinates: ("..x..","..y..")", 5, 5)
     g.print("Current state: "..p.state, 5, 20)
-    love.graphics.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
+    g.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
+	g.print("Left and Right arrows to move, Space or Up to jump, Esc to quit", 5, 50)
 end
 
 function love.keyreleased(key)
