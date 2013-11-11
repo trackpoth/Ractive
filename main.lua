@@ -3,12 +3,12 @@ local Coin = require "player/coin"
 local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, gravity, delay, hasJumped
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, gravity, delay, hasJumped, coinsound
 
 function love.load()
 	g = love.graphics
 	g.setMode(1024, 768)
-	g.setCaption("Ractive PreAlpha 0.03")
+	g.setCaption("Ractive PreAlpha 0.1.1")
 	width = g.getWidth()
 	height = g.getHeight()
 	g.setBackgroundColor(0, 137, 255)
@@ -56,6 +56,9 @@ function love.load()
 			coinCollides = coins[i]:isColliding(map)
 		end
 	end
+
+	coinsound = love.audio.newSource("sound/coin.mp3")
+	coinsound:setVolume(2.0)
 end
 
 function love.update(dt)
@@ -63,11 +66,11 @@ function love.update(dt)
 		dt = 1/60
 	end
 
-	if love.keyboard.isDown("left") then
+	if love.keyboard.isDown("left") and not(love.keyboard.isDown("right")) then
 		p:moveLeft()
 		animation:flip(true, false)
 	end
-	if love.keyboard.isDown("right") then
+	if love.keyboard.isDown("right") and not(love.keyboard.isDown("left")) then
 		p:moveRight()
 		animation:flip(false, false)
 	end
@@ -96,6 +99,7 @@ function love.update(dt)
 
 		if coins[i]:touchesObject(p) then
 			score = score + 1
+			love.audio.play(coinsound)
 			table.remove(coins, i)
 		end
 	end
