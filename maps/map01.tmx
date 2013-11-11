@@ -5,7 +5,12 @@
  </tileset>
  <layer name="Walls" width="50" height="35">
   <data encoding="base64" compression="zlib">
-   eJzdlksOwCAIRLX3P3RXboyfEQYBX2LStFVnFNBaSqmPtOy85uMjjOMJK84YPjQ6WHFVu2dpPkrX0sKHRo9mfgsfFqz2deRjFweetXunCf1/9h3NDyui5IfWM9oHqTMaGHXfO88ZGiL4OGV09zg5l3Z5bwlaQ9ExVv9Ys9LhHVes2jw7Fz1qP9OHN7fr7mrf2HuKjBdtP0YgaxLdB+u+kQX0TmsZ/6O5pP3R91HJpndGRB+SuM3kQ9LnVn7P9Ej7eevXkl1/w0K/JD+165V1/Xuy62+w6lWE9gOi0wGw
+   eJzdVtsKxSAM0/P/H72nwUHs7NJL2gWEgTqTXqJzjDE/Mrrjazp+bCJGVKgzj5rfrUW0zOUb5YbG0iv+7B7rouOUV0nHKb/rfFY+JF4R+WDcU1F1hfoNqluzXvN/ayyseWP2uWfNdfGrf+zeHm/upaf4MXx3N+9xTjRO/cnU4eXN0r3I8H5PHWxk+67mTetdM8j7qhK0fllZh5ZfdR1aPOnIqv/dWeh+aa4Lou/HLFTki9RtJx3Inqz+lvig+9j8rejO/0YEf6Q/rfHqGv8V3fnf8PKrCuMCVBsBrQ==
+  </data>
+ </layer>
+ <layer name="Coins" width="50" height="35" opacity="0">
+  <data encoding="base64" compression="zlib">
+   eJzt2OsKgCAMBWB7/5eOIKECLW2X43Y+8J+o03nBUgjRdhbPvp/FW2tcCGMjGbPr+lY3Q45k3hcWcWec1xGcl3Eoe9a7/6is3iya7UfICdQYevkhvaYoZw1RZZn/1/6IpGnf9VbvCE299vlmuYsQwwE1jq97iHcGVbNn/J9/Tf57r2cH0vYAgw==
   </data>
  </layer>
 </map>
