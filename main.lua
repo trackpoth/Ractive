@@ -3,7 +3,7 @@ local Coin = require "player/coin"
 local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, gravity, delay, hasJumped, coinsound
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, gravity, delay, hasJumped, coinsound, mousex, mousey
 
 function love.load()
 	g = love.graphics
@@ -66,15 +66,15 @@ function love.update(dt)
 		dt = 1/60
 	end
 
-	if love.keyboard.isDown("left") and not(love.keyboard.isDown("right")) then
+	if love.keyboard.isDown("a") and not(love.keyboard.isDown("d")) then
 		p:moveLeft()
 		animation:flip(true, false)
 	end
-	if love.keyboard.isDown("right") and not(love.keyboard.isDown("left")) then
+	if love.keyboard.isDown("d") and not(love.keyboard.isDown("a")) then
 		p:moveRight()
 		animation:flip(false, false)
 	end
-	if love.keyboard.isDown(" ") or love.keyboard.isDown("up") then
+	if love.keyboard.isDown(" ") or love.keyboard.isDown("w") then
 		p:jump()
 	end
 
@@ -105,6 +105,7 @@ function love.update(dt)
 	end
 
 	camera:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
+	mousex, mousey = love.mouse.getPosition()
 end
 
 function love.draw()
@@ -131,7 +132,8 @@ function love.draw()
 	g.print("Player coordinates: ("..x..","..y..")", 5, 5)
 	g.print("Current state: "..p.state, 5, 20)
 	g.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
-	g.print("Left and Right arrows to move, Space or Up to jump, Esc to quit", 5, 50)
+	g.print("Mouse position: ("..mousex..","..mousey..")", 5, 50)
+	g.print("WASD to move, Space or W to jump, Esc to quit", 5, 65)
 	g.print("Score: "..score, 900, 5)
 end
 
@@ -139,7 +141,7 @@ function love.keyreleased(key)
 	if key == "escape" then
 		love.event.push("quit")
 	end
-	if key == "right" or key == "left" then
+	if key == "d" or key == "a" then
 		p:stop()
 	end
 end
