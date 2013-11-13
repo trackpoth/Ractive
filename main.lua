@@ -59,6 +59,16 @@ function love.load()
 
 	coinsound = love.audio.newSource("sound/coin.mp3")
 	coinsound:setVolume(2.0)
+
+	love.mouse.setVisible(false)
+	mouseimg = g.newImage("player/crosshair.png")
+
+	font = g.newImageFont("font.png",
+    " abcdefghijklmnopqrstuvwxyz" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+    "123456789.,!?-+/():;%&`'*#=[]\"")
+
+    g.setFont(font)
 end
 
 function love.update(dt)
@@ -105,7 +115,6 @@ function love.update(dt)
 	end
 
 	camera:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
-	mousex, mousey = love.mouse.getPosition()
 end
 
 function love.draw()
@@ -114,6 +123,7 @@ function love.draw()
 	local camX, camY = camera._x, camera._y
 	local tileX = math.floor(p.x / map.tileWidth)
 	local tileY = math.floor(p.y / map.tileHeight)
+	local mousex, mousey = love.mouse.getPosition()
 
 	camera:set()
 
@@ -128,11 +138,13 @@ function love.draw()
 
 	camera:unset()
 
+	g.draw(mouseimg, mousex, mousey)
+
 	g.setColor(255, 255, 255)
 	g.print("Player coordinates: ("..x..","..y..")", 5, 5)
 	g.print("Current state: "..p.state, 5, 20)
 	g.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
-	g.print("Mouse position: ("..mousex..","..mousey..")", 5, 50)
+	g.print("Mouse position: ("..mousex..","..mousey..")",5, 50)
 	g.print("WASD to move, Space or W to jump, Esc to quit", 5, 65)
 	g.print("Score: "..score, 900, 5)
 end
