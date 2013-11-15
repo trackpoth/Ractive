@@ -2,8 +2,9 @@ local Player = require "player/player"
 local Coin = require "player/coin"
 local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
+local Mouse = require "mouse/mouse"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, gravity, delay, hasJumped, coinsound, mousex, mousey
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, gravity, delay, hasJumped, coinsound
 
 function love.load()
 	g = love.graphics
@@ -31,6 +32,7 @@ function love.load()
 	score = 0
 
 	p = Player:new()
+	m = mouse:new()
 
 	p.x = 300
 	p.y = 300
@@ -61,7 +63,6 @@ function love.load()
 	coinsound:setVolume(2.0)
 
 	love.mouse.setVisible(false)
-	mouseimg = g.newImage("player/crosshair.png")
 
 	font = g.newImageFont("font.png",
     " abcdefghijklmnopqrstuvwxyz" ..
@@ -114,6 +115,8 @@ function love.update(dt)
 		end
 	end
 
+	m:update(p.x, p.y)
+
 	camera:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
 end
 
@@ -123,7 +126,6 @@ function love.draw()
 	local camX, camY = camera._x, camera._y
 	local tileX = math.floor(p.x / map.tileWidth)
 	local tileY = math.floor(p.y / map.tileHeight)
-	local mousex, mousey = love.mouse.getPosition()
 
 	camera:set()
 
@@ -138,15 +140,16 @@ function love.draw()
 
 	camera:unset()
 
-	g.draw(mouseimg, mousex, mousey)
+	g.draw(m.mouseimg, m.mouseposx, m.mouseposy)
 
-	g.setColor(255, 255, 255)
+	g.setColor(0, 255, 255)
 	g.print("Player coordinates: ("..x..","..y..")", 5, 5)
 	g.print("Current state: "..p.state, 5, 20)
 	g.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
-	g.print("Mouse position: ("..mousex..","..mousey..")",5, 50)
+	g.print("Mouse position: ("..m.mouseposx..","..m.mouseposy..")",5, 50)
 	g.print("WASD to move, Space or W to jump, Esc to quit", 5, 65)
 	g.print("Score: "..score, 900, 5)
+	g.setColor(255, 255, 255)
 end
 
 function love.keyreleased(key)
