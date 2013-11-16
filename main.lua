@@ -4,7 +4,7 @@ local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
 local Mouse = require "mouse/mouse"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, gravity, delay, hasJumped, coinsound
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound
 
 function love.load()
 	g = love.graphics
@@ -62,14 +62,14 @@ function love.load()
 	coinsound = love.audio.newSource("sound/coin.mp3")
 	coinsound:setVolume(2.0)
 
-	love.mouse.setVisible(false)
+	love.mouse.setVisible(true)
 
 	font = g.newImageFont("font.png",
-    " abcdefghijklmnopqrstuvwxyz" ..
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
-    "123456789.,!?-+/():;%&`'*#=[]\"")
+	" abcdefghijklmnopqrstuvwxyz" ..
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+	"123456789.,!?-+/():;%&`'*#=[]\"")
 
-    g.setFont(font)
+	g.setFont(font)
 end
 
 function love.update(dt)
@@ -115,7 +115,8 @@ function love.update(dt)
 		end
 	end
 
-	m:update(p.x, p.y)
+	love.mouse.setPosition(width / 2, height / 2)
+	m:update(love.mouse.getX(), love.mouse.getY(), dt)
 
 	camera:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
 end
@@ -137,16 +138,15 @@ function love.draw()
 	end
 
 	animation:draw(x - p.width / 2, y - p.height / 2)
+	g.draw(m.mouseimg, m.mousePosX, m.mousePosY)
 
 	camera:unset()
-
-	g.draw(m.mouseimg, m.mouseposx, m.mouseposy)
 
 	g.setColor(0, 255, 255)
 	g.print("Player coordinates: ("..x..","..y..")", 5, 5)
 	g.print("Current state: "..p.state, 5, 20)
 	g.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
-	g.print("Mouse position: ("..m.mouseposx..","..m.mouseposy..")",5, 50)
+	g.print("Mouse position: ("..m.mousePosX..","..m.mousePosY..")",5, 50)
 	g.print("WASD to move, Space or W to jump, Esc to quit", 5, 65)
 	g.print("Score: "..score, 900, 5)
 	g.setColor(255, 255, 255)

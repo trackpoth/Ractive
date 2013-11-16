@@ -2,14 +2,14 @@ coin = {}
 
 function coin:new(coinX, coinY)
 	local object = {
-	x = coinX,
-	y = coinY,
-	width = 32,
-	height = 32,
-	frame = 1,
-	delay = 200,
-	delta = 0,
-	maxDelta = 10
+		x = coinX,
+		y = coinY,
+		width = 32,
+		height = 32,
+		frame = 1,
+		delay = 200,
+		delta = 0,
+		maxDelta = 10
 	}
 	setmetatable(object, { __index = coin } )
 	return object
