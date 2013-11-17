@@ -8,7 +8,7 @@ local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i,
 function love.load()
 	g = love.graphics
 	g.setMode(1024, 768)
-	g.setCaption("Ractive PreAlpha 0.1.1")
+	g.setCaption("Ractive PreAlpha 0.2")
 	width = g.getWidth()
 	height = g.getHeight()
 	g.setBackgroundColor(0, 137, 255)
