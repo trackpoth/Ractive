@@ -71,4 +71,8 @@ function camera:setBounds(x1, y1, x2, y2)
 	self._bounds = { x1 = x1, y1 = y1, x2 = x2, y2 = y2 }
 end
 
+function camera:mousePosition()
+	return love.mouse.getX() * self.scaleX + self._x, love.mouse.getY() * self.scaleY + self._y
+end
+
 return camera

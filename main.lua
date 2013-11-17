@@ -2,9 +2,8 @@ local Player = require "player/player"
 local Coin = require "player/coin"
 local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
-local Mouse = require "mouse/mouse"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode
 
 function love.load()
 	g = love.graphics
@@ -20,8 +19,8 @@ function love.load()
 	map = loader.load("map01.tmx")
 	map:setDrawRange(0, 0, map.width * map.tileWidth, map.height * map.tileHeight)
 
-	camera = Camera:new()
-	camera:setBounds(0, 0, map.width * map.tileWidth - width, map.height * map.tileHeight - height)
+	cam = Camera:new()
+	cam:setBounds(0, 0, map.width * map.tileWidth - width, map.height * map.tileHeight - height)
 
 	animation = SpriteAnimation:new("player/playersprites.png", 24, 32, 4, 4)
 	animation:load(delay)
@@ -32,8 +31,6 @@ function love.load()
 	score = 0
 
 	p = Player:new()
-	m = mouse:new()
-
 	p.x = 300
 	p.y = 300
 	p.width = 24
@@ -62,14 +59,16 @@ function love.load()
 	coinsound = love.audio.newSource("sound/coin.mp3")
 	coinsound:setVolume(2.0)
 
-	love.mouse.setVisible(true)
-
 	font = g.newImageFont("font.png",
 	" abcdefghijklmnopqrstuvwxyz" ..
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
 	"123456789.,!?-+/():;%&`'*#=[]\"")
 
 	g.setFont(font)
+
+	mousePosX = love.graphics.getWidth() / 2
+	mousePosY = love.graphics.getHeight() / 2
+	mouseimg = love.graphics.newImage("player/crosshair.png")
 end
 
 function love.update(dt)
@@ -114,21 +113,18 @@ function love.update(dt)
 			table.remove(coins, i)
 		end
 	end
-
-	love.mouse.setPosition(width / 2, height / 2)
-	m:update(love.mouse.getX(), love.mouse.getY(), dt)
-
-	camera:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
+	mousePosX, mousePosY = cam:mousePosition()
+	cam:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
 end
 
 function love.draw()
 	local x = math.floor(p.x)
 	local y = math.floor(p.y)
-	local camX, camY = camera._x, camera._y
+	local camX, camY = cam._x, cam._y
 	local tileX = math.floor(p.x / map.tileWidth)
 	local tileY = math.floor(p.y / map.tileHeight)
 
-	camera:set()
+	cam:set()
 
 	map:draw()
 
@@ -138,18 +134,35 @@ function love.draw()
 	end
 
 	animation:draw(x - p.width / 2, y - p.height / 2)
-	g.draw(m.mouseimg, m.mousePosX, m.mousePosY)
+	g.draw(mouseimg, mousePosX, mousePosY)
 
-	camera:unset()
+	cam:unset()
 
 	g.setColor(0, 255, 255)
-	g.print("Player coordinates: ("..x..","..y..")", 5, 5)
-	g.print("Current state: "..p.state, 5, 20)
-	g.print("Current tile: ("..tileX..", "..tileY..")", 5, 35)
-	g.print("Mouse position: ("..m.mousePosX..","..m.mousePosY..")",5, 50)
-	g.print("WASD to move, Space or W to jump, Esc to quit", 5, 65)
+	g.print("WASD to move, Space or W to jump, Esc to quit, T to toggle debug info", 5, 5)
+
+	if debuginfo then
+		love.mouse.setVisible(true)
+		g.print("Player coordinates: ("..x..","..y..")", 5, 20)
+		g.print("Current state: "..p.state, 5, 35)
+		g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
+		g.print("Mouse position: ("..mousePosX..","..mousePosY..")",5, 65)
+	else
+		love.mouse.setVisible(false)
+	end
+	
 	g.print("Score: "..score, 900, 5)
 	g.setColor(255, 255, 255)
+end
+
+function love.keypressed(key)
+	if key == "t" then
+		if debuginfo == true then
+			debuginfo = false
+		else
+			debuginfo = true
+		end
+	end
 end
 
 function love.keyreleased(key)
