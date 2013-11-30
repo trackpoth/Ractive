@@ -106,13 +106,18 @@ function love.update(dt)
 
 	for i in ipairs(coins) do
 		coins[i]:update(dt)
-
 		if coins[i]:touchesObject(p) then
 			score = score + 1
 			love.audio.play(coinsound)
 			table.remove(coins, i)
 		end
 	end
+
+	for i,v in ipairs(p.bullets) do
+		v.x = v.x + (v.dx * dt)
+		v.y = v.y + (v.dy * dt)
+	end
+
 	cam:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
 	mousePosX, mousePosY = cam:mousePosition()
 end
@@ -131,6 +136,10 @@ function love.draw()
 	for i in ipairs(coins) do
 		coinSprites:start(coins[i].frame)
 		coinSprites:draw(coins[i].x - coins[i].width / 2, coins[i].y - coins[i].height / 2)
+	end
+
+	for i,v in ipairs(p.bullets) do
+		love.graphics.circle("fill", v.x, v.y, 3)
 	end
 
 	animation:draw(x - p.width / 2, y - p.height / 2)
@@ -171,6 +180,18 @@ function love.keyreleased(key)
 	end
 	if key == "d" or key == "a" then
 		p:stop()
+	end
+end
+
+function love.mousepressed(x, y, button)
+	if button == "l" then
+
+		local angle = math.atan2((p.y - mousePosY), (p.x - mousePosX))
+		
+		local bulletDx = p.bulletSpeed * math.cos(angle)
+		local bulletDy = p.bulletSpeed * math.sin(angle)
+		
+		table.insert(p.bullets, {x = mousePosX, y = mousePosY, dx = bulletDx, dy = bulletDy})
 	end
 end
 

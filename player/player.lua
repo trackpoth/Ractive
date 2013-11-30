@@ -14,6 +14,9 @@ function Player:new()
 		jumpSpeed = 0,
 		runSpeed = 0,
 		onFloor = false,
+
+		bullets = {},
+		bulletSpeed = 200
 	}
 	return setmetatable(object, { __index = self })
 end
