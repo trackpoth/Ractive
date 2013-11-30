@@ -113,8 +113,8 @@ function love.update(dt)
 			table.remove(coins, i)
 		end
 	end
-	mousePosX, mousePosY = cam:mousePosition()
 	cam:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
+	mousePosX, mousePosY = cam:mousePosition()
 end
 
 function love.draw()
@@ -134,7 +134,7 @@ function love.draw()
 	end
 
 	animation:draw(x - p.width / 2, y - p.height / 2)
-	g.draw(mouseimg, mousePosX, mousePosY)
+	g.draw(mouseimg, mousePosX - 16, mousePosY - 16)
 
 	cam:unset()
 
