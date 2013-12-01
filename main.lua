@@ -8,7 +8,7 @@ local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i,
 function love.load()
 	g = love.graphics
 	g.setMode(1024, 768)
-	g.setCaption("Ractive PreAlpha 0.2")
+	g.setCaption("Ractive PreAlpha 1.0")
 	width = g.getWidth()
 	height = g.getHeight()
 	g.setBackgroundColor(0, 137, 255)
@@ -36,7 +36,7 @@ function love.load()
 	p.width = 24
 	p.height = 32
 	p.jumpSpeed = -420
-	p.runSpeed = 180
+	p.runSpeed = 150
 
 	gravity = 1000
 	delay = 120
@@ -115,7 +115,13 @@ function love.update(dt)
 
 	for i,v in ipairs(p.bullets) do
 		v.x = v.x + (v.dx * dt)
+		if v.x < 0 or v.x > map.width * map.tileWidth then
+			table.remove(p.bullets, i)
+		end
 		v.y = v.y + (v.dy * dt)
+		if v.y < 0 or v.y > map.height * map.tileHeight then
+			table.remove(p.bullets, i)
+		end
 	end
 
 	cam:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
@@ -139,7 +145,7 @@ function love.draw()
 	end
 
 	for i,v in ipairs(p.bullets) do
-		love.graphics.circle("fill", v.x, v.y, 3)
+		g.circle("fill", v.x, v.y, 3)
 	end
 
 	animation:draw(x - p.width / 2, y - p.height / 2)
@@ -155,7 +161,8 @@ function love.draw()
 		g.print("Player coordinates: ("..x..","..y..")", 5, 20)
 		g.print("Current state: "..p.state, 5, 35)
 		g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
-		g.print("Mouse position: ("..mousePosX..","..mousePosY..")",5, 65)
+		g.print("Mouse position: ("..mousePosX..","..mousePosY..")", 5, 65)
+		g.print("Map Width: "..map.width * map.tileWidth..", Height: "..map.height * map.tileHeight, 5, 80)
 	else
 		love.mouse.setVisible(false)
 	end
