@@ -51,8 +51,8 @@ function Player:collide(event)
 end
 
 function Player:update(dt, gravity, map)
-	local halfX = self.width / 2
-	local halfY = self.height / 2
+	halfX = self.width / 2
+	halfY = self.height / 2
 
 	self.ySpeed = self.ySpeed + (gravity * dt)
 

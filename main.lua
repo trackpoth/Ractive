@@ -3,7 +3,7 @@ local Coin = require "player/coin"
 local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, hitmeter
 
 function love.load()
 	g = love.graphics
@@ -42,6 +42,8 @@ function love.load()
 	delay = 120
 	hasJumped = false
 
+	hitmeter = 0
+
 	math.randomseed(os.time())
 	numCoins = math.random(40,60)
 	coins = {}
@@ -66,9 +68,13 @@ function love.load()
 
 	g.setFont(font)
 
-	mousePosX = love.graphics.getWidth() / 2
-	mousePosY = love.graphics.getHeight() / 2
-	mouseimg = love.graphics.newImage("player/crosshair.png")
+	mousePosX = g.getWidth() / 2
+	mousePosY = g.getHeight() / 2
+	mouseimg = g.newImage("player/crosshair.png")
+
+	bgm = love.audio.newSource("sound/bgm.ogg")
+	bgm:setLooping(true)
+	bgm:setVolume(0.5)
 end
 
 function love.update(dt)
@@ -122,6 +128,10 @@ function love.update(dt)
 		if v.y < 0 or v.y > map.height * map.tileHeight then
 			table.remove(p.bullets, i)
 		end
+		if CheckCollision(p.x - halfX + 1, p.y - halfY, p.width, p.height, v.x, v.y, 1, 1) == true then
+			table.remove(p.bullets, i)
+			hitmeter = hitmeter + 1
+		end
 	end
 
 	cam:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
@@ -145,7 +155,7 @@ function love.draw()
 	end
 
 	for i,v in ipairs(p.bullets) do
-		g.circle("fill", v.x, v.y, 3)
+		g.rectangle("fill", v.x, v.y, 4, 4)
 	end
 
 	animation:draw(x - p.width / 2, y - p.height / 2)
@@ -154,7 +164,7 @@ function love.draw()
 	cam:unset()
 
 	g.setColor(0, 255, 255)
-	g.print("WASD to move, Space or W to jump, Esc to quit, T to toggle debug info", 5, 5)
+	g.print("WASD to move, Space or W to jump, Esc to quit, T to toggle debug info, M to toggle music", 5, 5)
 
 	if debuginfo then
 		love.mouse.setVisible(true)
@@ -163,6 +173,7 @@ function love.draw()
 		g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
 		g.print("Mouse position: ("..mousePosX..","..mousePosY..")", 5, 65)
 		g.print("Map Width: "..map.width * map.tileWidth..", Height: "..map.height * map.tileHeight, 5, 80)
+		g.print("Hitmeter: "..hitmeter, 5, 95)
 	else
 		love.mouse.setVisible(false)
 	end
@@ -177,6 +188,16 @@ function love.keypressed(key)
 			debuginfo = false
 		else
 			debuginfo = true
+		end
+	end
+
+	if key == "m" then
+		if togglemusic == true then
+			togglemusic = false
+			love.audio.stop(bgm)
+		else
+			togglemusic = true
+			love.audio.play(bgm)
 		end
 	end
 end
@@ -200,6 +221,13 @@ function love.mousepressed(x, y, button)
 		
 		table.insert(p.bullets, {x = mousePosX, y = mousePosY, dx = bulletDx, dy = bulletDy})
 	end
+end
+
+function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
+	return x1 < x2 + w2 and
+		x2 < x1 + w1 and
+		y1 < y2 + h2 and
+		y2 < y1 + h1
 end
 
 function math.clamp(x, min, max)
