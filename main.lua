@@ -3,7 +3,7 @@ local Coin = require "player/coin"
 local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, hitmeter
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, hitmeter, gamestate
 
 function love.load()
 	g = love.graphics
@@ -75,6 +75,8 @@ function love.load()
 	bgm = love.audio.newSource("sound/bgm.ogg")
 	bgm:setLooping(true)
 	bgm:setVolume(0.5)
+
+	gamestate = "ingame"
 end
 
 function love.update(dt)
@@ -82,60 +84,62 @@ function love.update(dt)
 		dt = 1/60
 	end
 
-	if love.keyboard.isDown("a") and not(love.keyboard.isDown("d")) then
-		p:moveLeft()
-		animation:flip(true, false)
-	end
-	if love.keyboard.isDown("d") and not(love.keyboard.isDown("a")) then
-		p:moveRight()
-		animation:flip(false, false)
-	end
-	if love.keyboard.isDown(" ") or love.keyboard.isDown("w") then
-		p:jump()
-	end
-
-	p:update(dt, gravity, map)
-
-	if p.state == "stand" then
-		animation:switch(1, 2, 1000)
-	end
-	if p.state == "moveRight" or p.state == "moveLeft" then
-		animation:switch(2, 2, 120)
-	end
-	if p.state == "jump" then
-		animation:switch(3, 1, 300)
-	end
-	if p.state == "fall" then
-		animation:switch(4, 1, 300)
-	end
-	animation:update(dt)
-
-	for i in ipairs(coins) do
-		coins[i]:update(dt)
-		if coins[i]:touchesObject(p) then
-			score = score + 1
-			love.audio.play(coinsound)
-			table.remove(coins, i)
+	if gamestate == "ingame" then
+		if love.keyboard.isDown("a") and not(love.keyboard.isDown("d")) then
+			p:moveLeft()
+			animation:flip(true, false)
 		end
-	end
+		if love.keyboard.isDown("d") and not(love.keyboard.isDown("a")) then
+			p:moveRight()
+			animation:flip(false, false)
+		end
+		if love.keyboard.isDown(" ") or love.keyboard.isDown("w") then
+			p:jump()
+		end
 
-	for i,v in ipairs(p.bullets) do
-		v.x = v.x + (v.dx * dt)
-		if v.x < 0 or v.x > map.width * map.tileWidth then
-			table.remove(p.bullets, i)
-		end
-		v.y = v.y + (v.dy * dt)
-		if v.y < 0 or v.y > map.height * map.tileHeight then
-			table.remove(p.bullets, i)
-		end
-		if CheckCollision(p.x - halfX + 1, p.y - halfY, p.width, p.height, v.x, v.y, 1, 1) == true then
-			table.remove(p.bullets, i)
-			hitmeter = hitmeter + 1
-		end
-	end
+		p:update(dt, gravity, map)
 
-	cam:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
-	mousePosX, mousePosY = cam:mousePosition()
+		if p.state == "stand" then
+			animation:switch(1, 2, 1000)
+		end
+		if p.state == "moveRight" or p.state == "moveLeft" then
+			animation:switch(2, 2, 120)
+		end
+		if p.state == "jump" then
+			animation:switch(3, 1, 300)
+		end
+		if p.state == "fall" then
+			animation:switch(4, 1, 300)
+		end
+		animation:update(dt)
+
+		for i in ipairs(coins) do
+			coins[i]:update(dt)
+			if coins[i]:touchesObject(p) then
+				score = score + 1
+				love.audio.play(coinsound)
+				table.remove(coins, i)
+			end
+		end
+
+		for i,v in ipairs(p.bullets) do
+			v.x = v.x + (v.dx * dt)
+			if v.x < 0 or v.x > map.width * map.tileWidth then
+				table.remove(p.bullets, i)
+			end
+			v.y = v.y + (v.dy * dt)
+			if v.y < 0 or v.y > map.height * map.tileHeight then
+				table.remove(p.bullets, i)
+			end
+			if CheckCollision(p.x - halfX + 1, p.y - halfY, p.width, p.height, v.x, v.y, 1, 1) == true then
+				table.remove(p.bullets, i)
+				hitmeter = hitmeter + 1
+			end
+		end
+
+		cam:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
+		mousePosX, mousePosY = cam:mousePosition()
+	end
 end
 
 function love.draw()
@@ -145,41 +149,54 @@ function love.draw()
 	local tileX = math.floor(p.x / map.tileWidth)
 	local tileY = math.floor(p.y / map.tileHeight)
 
-	cam:set()
-
-	map:draw()
-
-	for i in ipairs(coins) do
-		coinSprites:start(coins[i].frame)
-		coinSprites:draw(coins[i].x - coins[i].width / 2, coins[i].y - coins[i].height / 2)
+	if hitmeter > 100 then
+		gamestate = "gameover"
 	end
 
-	for i,v in ipairs(p.bullets) do
-		g.rectangle("fill", v.x, v.y, 4, 4)
+	if gamestate == "ingame" then
+		cam:set()
+
+		map:draw()
+
+		for i in ipairs(coins) do
+			coinSprites:start(coins[i].frame)
+			coinSprites:draw(coins[i].x - coins[i].width / 2, coins[i].y - coins[i].height / 2)
+		end
+
+		for i,v in ipairs(p.bullets) do
+			g.rectangle("fill", v.x, v.y, 4, 4)
+		end
+
+		animation:draw(x - p.width / 2, y - p.height / 2)
+		g.draw(mouseimg, mousePosX - 16, mousePosY - 16)
+
+		cam:unset()
+
+		g.setColor(0, 255, 255)
+		g.print("WASD to move, Space or W to jump, Esc to quit, T to toggle debug info, M to toggle music", 5, 5)
+
+		if debuginfo then
+			love.mouse.setVisible(true)
+			g.print("Player coordinates: ("..x..","..y..")", 5, 20)
+			g.print("Current state: "..p.state, 5, 35)
+			g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
+			g.print("Mouse position: ("..mousePosX..","..mousePosY..")", 5, 65)
+			g.print("Map Width: "..map.width * map.tileWidth..", Height: "..map.height * map.tileHeight, 5, 80)
+			g.print("Hitmeter: "..hitmeter, 5, 95)
+		else
+			love.mouse.setVisible(false)
+		end
+		
+		g.print("Score: "..score, 900, 5)
+		g.setColor(255, 255, 255)
 	end
 
-	animation:draw(x - p.width / 2, y - p.height / 2)
-	g.draw(mouseimg, mousePosX - 16, mousePosY - 16)
-
-	cam:unset()
-
-	g.setColor(0, 255, 255)
-	g.print("WASD to move, Space or W to jump, Esc to quit, T to toggle debug info, M to toggle music", 5, 5)
-
-	if debuginfo then
+	if gamestate == "gameover" then
 		love.mouse.setVisible(true)
-		g.print("Player coordinates: ("..x..","..y..")", 5, 20)
-		g.print("Current state: "..p.state, 5, 35)
-		g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
-		g.print("Mouse position: ("..mousePosX..","..mousePosY..")", 5, 65)
-		g.print("Map Width: "..map.width * map.tileWidth..", Height: "..map.height * map.tileHeight, 5, 80)
-		g.print("Hitmeter: "..hitmeter, 5, 95)
-	else
-		love.mouse.setVisible(false)
+		g.setBackgroundColor(0, 0, 0)
+		g.setColor(255, 255, 255)
+		g.print("Game over. Press ESC to quit", 5, 5)
 	end
-	
-	g.print("Score: "..score, 900, 5)
-	g.setColor(255, 255, 255)
 end
 
 function love.keypressed(key)
