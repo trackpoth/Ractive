@@ -11,9 +11,12 @@ function Player:new()
 		xSpeedMax = 800,
 		ySpeedMax = 800,
 		state = "",
-		jumpSpeed = 0,
-		runSpeed = 0,
+		jumpSpeed = -420,
+		runSpeed = 150,
 		onFloor = false,
+
+		maxLife = 40,
+		life = 40,
 
 		bullets = {},
 		bulletSpeed = 200

@@ -3,7 +3,7 @@ local Coin = require "player/coin"
 local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, hitmeter, gamestate
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, gamestate
 
 function love.load()
 	g = love.graphics
@@ -35,14 +35,10 @@ function love.load()
 	p.y = 300
 	p.width = 24
 	p.height = 32
-	p.jumpSpeed = -420
-	p.runSpeed = 150
 
 	gravity = 1000
 	delay = 120
 	hasJumped = false
-
-	hitmeter = 0
 
 	math.randomseed(os.time())
 	numCoins = math.random(40,60)
@@ -133,7 +129,7 @@ function love.update(dt)
 			end
 			if CheckCollision(p.x - halfX + 1, p.y - halfY, p.width, p.height, v.x, v.y, 1, 1) == true then
 				table.remove(p.bullets, i)
-				hitmeter = hitmeter + 1
+				p.life = p.life - 1
 			end
 		end
 
@@ -149,7 +145,7 @@ function love.draw()
 	local tileX = math.floor(p.x / map.tileWidth)
 	local tileY = math.floor(p.y / map.tileHeight)
 
-	if hitmeter > 100 then
+	if p.life < 1 then
 		gamestate = "gameover"
 	end
 
@@ -172,7 +168,7 @@ function love.draw()
 
 		cam:unset()
 
-		g.setColor(0, 255, 255)
+		g.setColor(255, 255, 255)
 		g.print("WASD to move, Space or W to jump, Esc to quit, T to toggle debug info, M to toggle music", 5, 5)
 
 		if debuginfo then
@@ -182,16 +178,23 @@ function love.draw()
 			g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
 			g.print("Mouse position: ("..mousePosX..","..mousePosY..")", 5, 65)
 			g.print("Map Width: "..map.width * map.tileWidth..", Height: "..map.height * map.tileHeight, 5, 80)
-			g.print("Hitmeter: "..hitmeter, 5, 95)
 		else
 			love.mouse.setVisible(false)
 		end
 		
-		g.print("Score: "..score, 900, 5)
+		g.print("Score: "..score, 5, height - 35)
+
+		if p.life < p.maxLife / 3 then
+			g.setColor(255, 0, 0)
+		else
+			g.setColor(255, 255, 255)
+		end
+		g.print("Life: "..p.life.."/"..p.maxLife, 5, height - 20)
 		g.setColor(255, 255, 255)
 	end
 
 	if gamestate == "gameover" then
+		love.audio.stop(bgm)
 		love.mouse.setVisible(true)
 		g.setBackgroundColor(0, 0, 0)
 		g.setColor(255, 255, 255)
@@ -208,7 +211,7 @@ function love.keypressed(key)
 		end
 	end
 
-	if key == "m" then
+	if key == "m" and gamestate == "ingame" then
 		if togglemusic == true then
 			togglemusic = false
 			love.audio.stop(bgm)
