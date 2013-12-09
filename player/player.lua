@@ -26,6 +26,8 @@ end
 
 function Player:jump()
 	if self.onFloor then
+		TEsound.volume("jump", 0.2)
+		TEsound.play("sound/jump.ogg", "jump")
 		self.ySpeed = self.jumpSpeed
 		self.onFloor = false
 	end

@@ -2,6 +2,7 @@ local Player = require "player/player"
 local Coin = require "player/coin"
 local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
+require "TEsound"
 
 local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, gamestate
 
@@ -54,9 +55,6 @@ function love.load()
 		end
 	end
 
-	coinsound = love.audio.newSource("sound/coin.mp3")
-	coinsound:setVolume(2.0)
-
 	font = g.newImageFont("font.png",
 	" abcdefghijklmnopqrstuvwxyz" ..
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
@@ -68,16 +66,16 @@ function love.load()
 	mousePosY = g.getHeight() / 2
 	mouseimg = g.newImage("player/crosshair.png")
 
-	bgm = love.audio.newSource("sound/bgm.ogg")
-	bgm:setLooping(true)
-	bgm:setVolume(0.5)
-
 	gamestate = "ingame"
 end
 
 function love.update(dt)
 	if dt > 1/60 then
 		dt = 1/60
+	end
+
+	if p.life < 1 then
+		gamestate = "gameover"
 	end
 
 	if gamestate == "ingame" then
@@ -113,7 +111,7 @@ function love.update(dt)
 			coins[i]:update(dt)
 			if coins[i]:touchesObject(p) then
 				score = score + 1
-				love.audio.play(coinsound)
+				TEsound.play("sound/coin.ogg")
 				table.remove(coins, i)
 			end
 		end
@@ -136,6 +134,8 @@ function love.update(dt)
 		cam:setPosition(math.floor(p.x - width / 2), math.floor(p.y - height / 2))
 		mousePosX, mousePosY = cam:mousePosition()
 	end
+
+	TEsound.cleanup()
 end
 
 function love.draw()
@@ -144,10 +144,6 @@ function love.draw()
 	local camX, camY = cam._x, cam._y
 	local tileX = math.floor(p.x / map.tileWidth)
 	local tileY = math.floor(p.y / map.tileHeight)
-
-	if p.life < 1 then
-		gamestate = "gameover"
-	end
 
 	if gamestate == "ingame" then
 		cam:set()
@@ -194,7 +190,7 @@ function love.draw()
 	end
 
 	if gamestate == "gameover" then
-		love.audio.stop(bgm)
+		TEsound.stop("sound/bgm.ogg")
 		love.mouse.setVisible(true)
 		g.setBackgroundColor(0, 0, 0)
 		g.setColor(255, 255, 255)
@@ -214,10 +210,10 @@ function love.keypressed(key)
 	if key == "m" and gamestate == "ingame" then
 		if togglemusic == true then
 			togglemusic = false
-			love.audio.stop(bgm)
+			TEsound.stop("sound/bgm.ogg")
 		else
 			togglemusic = true
-			love.audio.play(bgm)
+			TEsound.playLooping("sound/bgm.ogg")
 		end
 	end
 end
