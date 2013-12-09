@@ -190,7 +190,7 @@ function love.draw()
 	end
 
 	if gamestate == "gameover" then
-		TEsound.stop("sound/bgm.ogg")
+		TEsound.stop("all")
 		love.mouse.setVisible(true)
 		g.setBackgroundColor(0, 0, 0)
 		g.setColor(255, 255, 255)
@@ -210,10 +210,10 @@ function love.keypressed(key)
 	if key == "m" and gamestate == "ingame" then
 		if togglemusic == true then
 			togglemusic = false
-			TEsound.stop("sound/bgm.ogg")
+			TEsound.stop("bgm")
 		else
 			togglemusic = true
-			TEsound.playLooping("sound/bgm.ogg")
+			TEsound.playLooping("sound/bgm.ogg", "bgm")
 		end
 	end
 end
