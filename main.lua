@@ -1,20 +1,20 @@
 local Player = require "player/player"
 local Coin = require "player/coin"
-local SpriteAnimation = require "SpriteAnimation"
 local Camera = require "camera"
-require "TEsound"
+local SpriteAnimation = require "libraries/SpriteAnimation"
+
+require "libraries/TEsound"
 
 local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, gamestate
 
 function love.load()
 	g = love.graphics
-	g.setMode(1024, 768)
-	g.setCaption("Ractive PreAlpha 1.0")
+
 	width = g.getWidth()
 	height = g.getHeight()
 	g.setBackgroundColor(0, 137, 255)
 
-	loader = require("AdvTiledLoader.Loader")
+	loader = require("libraries/AdvTiledLoader.Loader")
 	loader.path = "maps/"
 
 	map = loader.load("map01.tmx")

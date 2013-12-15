@@ -82,7 +82,7 @@ function SpriteAnimation:draw(x, y)
         yOffset = self.height
     end
     -- draw the quad
-    love.graphics.drawq(self.spriteImage, self.sprites[self.currentRow][self.currentFrame], x, y, 0, xScale, yScale, xOffset, yOffset)
+    love.graphics.draw(self.spriteImage, self.sprites[self.currentRow][self.currentFrame], x, y, 0, xScale, yScale, xOffset, yOffset)
 end
 
 function SpriteAnimation:switch(newRow, newMax, newDelay)
