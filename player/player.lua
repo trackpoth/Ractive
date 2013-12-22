@@ -102,7 +102,6 @@ function Player:update(dt, gravity, map)
 	end
 
 	self.state = self:getState()
-
 end
 
 function Player:isColliding(map, x, y)

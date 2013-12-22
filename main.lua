@@ -125,9 +125,12 @@ function love.update(dt)
 			if v.y < 0 or v.y > map.height * map.tileHeight then
 				table.remove(p.bullets, i)
 			end
-			if CheckCollision(p.x - halfX + 1, p.y - halfY, p.width, p.height, v.x, v.y, 1, 1) == true then
+			if CheckCollision(p.x - halfX + 1, p.y - halfY, p.width, p.height, v.x, v.y, 1, 1) then
 				table.remove(p.bullets, i)
 				p.life = p.life - 1
+			end
+			if p:isColliding(map, v.x, v.y) then
+				table.remove(p.bullets, i)
 			end
 		end
 
@@ -195,6 +198,7 @@ function love.draw()
 		g.setBackgroundColor(0, 0, 0)
 		g.setColor(255, 255, 255)
 		g.print("Game over. Press ESC to quit", 5, 5)
+		g.print("Score: "..score, 5, 20)
 	end
 end
 
