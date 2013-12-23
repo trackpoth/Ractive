@@ -47,10 +47,15 @@ function love.load()
 	for i = 1, numCoins do
 		local coinCollides = true
 		while coinCollides do
-			local coinX = math.random(1, map.width - 1) * map.tileWidth + map.tileWidth / 2
-			local coinY = math.random(1, map.height - 1) * map.tileHeight + map.tileHeight / 2
+			local coinOverlaps = true
+			while coinOverlaps do
+				coinX = math.random(1, map.width - 1) * map.tileWidth + map.tileWidth / 2
+				coinY = math.random(1, map.height - 1) * map.tileHeight + map.tileHeight / 2
+
+				coinOverlaps = checkTableOverlapping(coins, coinX, coinY)
+			end
 			coins[i] = coin:new(coinX, coinY)
-			
+
 			coinCollides = coins[i]:isColliding(map)
 		end
 	end
@@ -252,4 +257,14 @@ end
 
 function math.clamp(x, min, max)
 	return x < min and min or (x > max and max or x)
+end
+
+function checkTableOverlapping(table, Xvalue, Yvalue)
+	for i,v in ipairs(table) do
+		if math.floor(v.x / map.tileWidth) == math.floor(Xvalue / map.tileWidth) and math.floor(v.y / map.tileHeight) == math.floor(Yvalue / map.tileHeight) then
+			return true
+		end
+	end
+
+	return false
 end
