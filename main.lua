@@ -143,6 +143,24 @@ function love.update(dt)
 		mousePosX, mousePosY = cam:mousePosition()
 	end
 
+	local angle = math.floor(findRotation(p.x, p.y, mousePosX, mousePosY))
+	if angle < 91 then
+		crosshairX = p.x - angle * 1.1
+		crosshairY = p.y + (90 - angle) * 1.1
+	end
+	if angle > 90 and angle < 181 then
+		crosshairX = p.x - (90 - (angle - 90)) * 1.1
+		crosshairY = p.y - (angle - 90) * 1.1
+	end
+	if angle > 180 and angle < 271 then
+		crosshairX = p.x + (angle - 180) * 1.1
+		crosshairY = p.y - (90 - (angle - 180)) * 1.1
+	end
+	if angle > 270 then
+		crosshairX = p.x + (90 - (angle - 270)) * 1.1
+		crosshairY = p.y + (angle - 270) * 1.1
+	end
+
 	TEsound.cleanup()
 end
 
@@ -168,7 +186,7 @@ function love.draw()
 		end
 
 		animation:draw(x - p.width / 2, y - p.height / 2)
-		g.draw(mouseimg, mousePosX - 16, mousePosY - 16)
+		g.draw(mouseimg, crosshairX - 16, crosshairY - 16)
 
 		cam:unset()
 
@@ -176,14 +194,12 @@ function love.draw()
 		g.print("WASD to move, Space or W to jump, Esc to quit, T to toggle debug info, M to toggle music", 5, 5)
 
 		if debuginfo then
-			love.mouse.setVisible(true)
 			g.print("Player coordinates: ("..x..","..y..")", 5, 20)
 			g.print("Current state: "..p.state, 5, 35)
 			g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
 			g.print("Mouse position: ("..mousePosX..","..mousePosY..")", 5, 65)
 			g.print("Map Width: "..map.width * map.tileWidth..", Height: "..map.height * map.tileHeight, 5, 80)
-		else
-			love.mouse.setVisible(false)
+			g.print("t: "..findRotation(p.x, p.y, mousePosX, mousePosY), 5, 95)
 		end
 		
 		g.print("Score: "..score, 5, height - 35)
@@ -238,13 +254,12 @@ end
 
 function love.mousepressed(x, y, button)
 	if button == "l" then
-
-		local angle = math.atan2((p.y - mousePosY), (p.x - mousePosX))
+		local angle = math.atan2((p.y - crosshairY), (p.x - crosshairX))
 		
 		local bulletDx = p.bulletSpeed * math.cos(angle)
 		local bulletDy = p.bulletSpeed * math.sin(angle)
 		
-		table.insert(p.bullets, {x = mousePosX, y = mousePosY, dx = bulletDx, dy = bulletDy})
+		table.insert(p.bullets, {x = crosshairX, y = crosshairY, dx = bulletDx, dy = bulletDy})
 	end
 end
 
@@ -265,6 +280,12 @@ function checkTableOverlapping(table, Xvalue, Yvalue)
 			return true
 		end
 	end
-
 	return false
+end
+
+-- Original "findRotation" function by Doomed_Space_Marine. Fixed, tested by robhol.
+function findRotation(x1,y1,x2,y2)
+	local t = -math.deg(math.atan2(x2-x1,y2-y1))
+	if t < 0 then t = t + 360 end;
+	return t;
 end
