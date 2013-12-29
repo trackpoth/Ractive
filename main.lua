@@ -52,7 +52,7 @@ function love.load()
 				coinX = math.random(1, map.width - 1) * map.tileWidth + map.tileWidth / 2
 				coinY = math.random(1, map.height - 1) * map.tileHeight + map.tileHeight / 2
 
-				coinOverlaps = checkTableOverlapping(coins, coinX, coinY)
+				coinOverlaps = checkXYOverlapping(coins, coinX, coinY)
 			end
 			coins[i] = coin:new(coinX, coinY)
 
@@ -143,23 +143,9 @@ function love.update(dt)
 		mousePosX, mousePosY = cam:mousePosition()
 	end
 
-	local angle = math.floor(findRotation(p.x, p.y, mousePosX, mousePosY))
-	if angle < 91 then
-		crosshairX = p.x - angle * 1.1
-		crosshairY = p.y + (90 - angle) * 1.1
-	end
-	if angle > 90 and angle < 181 then
-		crosshairX = p.x - (90 - (angle - 90)) * 1.1
-		crosshairY = p.y - (angle - 90) * 1.1
-	end
-	if angle > 180 and angle < 271 then
-		crosshairX = p.x + (angle - 180) * 1.1
-		crosshairY = p.y - (90 - (angle - 180)) * 1.1
-	end
-	if angle > 270 then
-		crosshairX = p.x + (90 - (angle - 270)) * 1.1
-		crosshairY = p.y + (angle - 270) * 1.1
-	end
+	local angle = math.atan2(p.y - mousePosY, p.x - mousePosX) + math.rad(180)
+	local crosshairDistance = 100
+	crosshairX, crosshairY = crosshairDistance * math.cos(angle) + p.x, crosshairDistance * math.sin(angle) + p.y
 
 	TEsound.cleanup()
 end
@@ -199,7 +185,6 @@ function love.draw()
 			g.print("Current tile: ("..tileX..", "..tileY..")", 5, 50)
 			g.print("Mouse position: ("..mousePosX..","..mousePosY..")", 5, 65)
 			g.print("Map Width: "..map.width * map.tileWidth..", Height: "..map.height * map.tileHeight, 5, 80)
-			g.print("t: "..findRotation(p.x, p.y, mousePosX, mousePosY), 5, 95)
 		end
 		
 		g.print("Score: "..score, 5, height - 35)
@@ -274,18 +259,11 @@ function math.clamp(x, min, max)
 	return x < min and min or (x > max and max or x)
 end
 
-function checkTableOverlapping(table, Xvalue, Yvalue)
+function checkXYOverlapping(table, Xvalue, Yvalue)
 	for i,v in ipairs(table) do
 		if math.floor(v.x / map.tileWidth) == math.floor(Xvalue / map.tileWidth) and math.floor(v.y / map.tileHeight) == math.floor(Yvalue / map.tileHeight) then
 			return true
 		end
 	end
 	return false
-end
-
--- Original "findRotation" function by Doomed_Space_Marine. Fixed, tested by robhol.
-function findRotation(x1,y1,x2,y2)
-	local t = -math.deg(math.atan2(x2-x1,y2-y1))
-	if t < 0 then t = t + 360 end;
-	return t;
 end
