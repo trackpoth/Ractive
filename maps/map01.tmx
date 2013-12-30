@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="50" height="35" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32">
-  <image source="maptiles.png" trans="ffffff" width="64" height="32"/>
+  <image source="maptiles.png" trans="ffffff" width="128" height="64"/>
  </tileset>
  <layer name="Walls" width="50" height="35">
   <data encoding="base64" compression="zlib">
-   eJzdVlsKwCAM093/0PsaDLHapbVpFxAG6kz6iPbWWv/JqI6/6bjYRIzIUGceNT9bi2jpwzfKDY2lV/zZPVZFxy6vko5dfsf5qHxIvE7kg3FPnaor1G9Q3Zr1mv9bY2HNG7PPPWuuil+9MXt7fLmXVvFj+O5s3uOc09j1J1OHlzdL9yLD+z11sBHtu5o3rXfNIO+rTND6ZWYdWn7ZdWix0hFV/7Oz0P3SXBWcvh+jkJEvUreVdCB7ovpb4oPuY/O3ojr/B9780f60xqtq/EdU5//Ay68yjBtW7wGu
+   eJzdWNEOwyAIXLuu6/9/8eqDCWlAARFwl5As2ZQ7Oajr9Vof5x1XNAkD/JuOTzSRQRQd2x1vEIczh/2RX8MF89UpWA+5HOAzxavHrZ6r1OtW/RHdZ6vowGoM60rl35Hftr73qgfluxn1oPpj5vyY5Stpv/Z8I83PyYHtrzkPuO8GQnOuq/S5V35PHdjdo5ef27Pec9c7vyVasyNaB2eGcPDUETX7R2ZV3SOTrzR31LpOo6N3p7WsKccj2eqBAfqO8l92HaUWHH7ZdXDR0iHtgZGZBnNZ9/lXSyoArf9RK/ktY39onsUZdXDmLLVG+kybdWfR+hnTzo1MddToyMS/QqKDw1/6vsDinShXR8bzf6KlYwX+Fb16jMwxzyhcf5WxBZU=
   </data>
  </layer>
- <layer name="Coins" width="50" height="35" opacity="0.01">
+ <layer name="Coins" width="50" height="35" opacity="0">
   <data encoding="base64" compression="zlib">
-   eJzt2OsKgCAMBWB7/5eOICGDjNkup+184D9Rp/OCrRGi7SyRfd9LtKdxIYyNdKyu61vdCjlSeV94xF1xXiU4L3Ioeza6/6y83iyW7WfICdQYZvmhvaYoZw1R55n/1/6ItFnf9V7vCEuz9vlmGWWI4YAYh2QP8c6gbvUM/vKvyX/v/9kB1UYAgw==
+   eJzt2N0KgCAMBWB7/5eOICEDDW0/x+184F2oy03FUgjRcTfPsd/NW29eCHMjGavr+vVthhzJXBdZ40bC/z4PpWa9x4/K6s6i2X+EnECNYZQf0muKstcQVZb5/xyPSJr2WW91j9A06p93llaEGC6IcczUEM8Mqlb34D/vmnz33s8JmM4AgA==
   </data>
  </layer>
 </map>

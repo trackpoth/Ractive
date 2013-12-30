@@ -12,7 +12,7 @@ function love.load()
 
 	width = g.getWidth()
 	height = g.getHeight()
-	g.setBackgroundColor(0, 137, 255)
+	g.setBackgroundColor(14, 182, 255)
 
 	loader = require("libraries/AdvTiledLoader.Loader")
 	loader.path = "maps/"
@@ -145,7 +145,7 @@ function love.update(dt)
 
 	local angle = math.atan2(p.y - mousePosY, p.x - mousePosX) + math.rad(180)
 	local crosshairDistance = 100
-	crosshairX, crosshairY = crosshairDistance * math.cos(angle) + p.x, crosshairDistance * math.sin(angle) + p.y
+	crosshairX, crosshairY = math.floor(crosshairDistance * math.cos(angle) + p.x), math.floor(crosshairDistance * math.sin(angle) + p.y)
 
 	TEsound.cleanup()
 end
