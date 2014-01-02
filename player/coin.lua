@@ -7,7 +7,7 @@ function coin:new(coinX, coinY)
 		width = 32,
 		height = 32,
 		frame = 1,
-		delay = 200,
+		delay = 160,
 		delta = 0,
 		maxDelta = 10
 	}
@@ -19,7 +19,7 @@ function coin:update(dt)
 	self.delta = self.delta + self.delay * dt
 	
 	if self.delta >= self.maxDelta then
-		self.frame = self.frame % 20 + 1
+		self.frame = self.frame % 24 + 1
 		self.delta = 0
 	end
 end

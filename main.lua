@@ -26,7 +26,7 @@ function love.load()
 	animation = SpriteAnimation:new("player/playersprites.png", 24, 32, 4, 4)
 	animation:load(delay)
 
-	coinSprites = SpriteAnimation:new("player/coin.png", 32, 32, 20, 1)
+	coinSprites = SpriteAnimation:new("player/coin.png", 32, 32, 24, 1)
 	coinSprites:load(delay)
    
 	score = 0
