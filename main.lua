@@ -5,7 +5,7 @@ local SpriteAnimation = require "libraries/SpriteAnimation"
 
 require "libraries/TEsound"
 
-local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, gamestate
+local g, loader, map, camera, animation, coinSprites, score, coins, numCoins, i, p, e, m, gravity, delay, hasJumped, coinsound, debugmode, togglemusic, gamestate
 
 function love.load()
 	g = love.graphics
@@ -26,6 +26,9 @@ function love.load()
 	animation = SpriteAnimation:new("player/playersprites.png", 24, 32, 4, 4)
 	animation:load(delay)
 
+	enemyAnimation = SpriteAnimation:new("player/enemysprites.png", 24, 32, 4, 4)
+	enemyAnimation:load(delay)
+
 	coinSprites = SpriteAnimation:new("player/coin.png", 32, 32, 24, 1)
 	coinSprites:load(delay)
    
@@ -36,6 +39,12 @@ function love.load()
 	p.y = 300
 	p.width = 24
 	p.height = 32
+
+	e = Player:new()
+	e.x = 300
+	e.y = 300
+	e.width = 24
+	e.height = 32
 
 	gravity = 1000
 	delay = 120
@@ -84,6 +93,12 @@ function love.update(dt)
 	end
 
 	if gamestate == "ingame" then
+
+		if e.life < 1 then
+			e.x = 0
+			e.y = 0
+		end
+
 		if love.keyboard.isDown("a") and not(love.keyboard.isDown("d")) then
 			p:moveLeft()
 			animation:flip(true, false)
@@ -97,6 +112,7 @@ function love.update(dt)
 		end
 
 		p:update(dt, gravity, map)
+		e:update(dt, gravity, map)
 
 		if p.state == "stand" then
 			animation:switch(1, 2, 1000)
@@ -133,6 +149,10 @@ function love.update(dt)
 			if CheckCollision(p.x - halfX + 1, p.y - halfY, p.width, p.height, v.x, v.y, 1, 1) then
 				table.remove(p.bullets, i)
 				p.life = p.life - 1
+			end
+			if CheckCollision(e.x - halfX + 1, e.y - halfY, e.width, e.height, v.x, v.y, 1, 1) then
+				table.remove(p.bullets, i)
+				e.life = e.life - 1
 			end
 			if p:isColliding(map, v.x, v.y) then
 				table.remove(p.bullets, i)
@@ -172,6 +192,8 @@ function love.draw()
 		end
 
 		animation:draw(x - p.width / 2, y - p.height / 2)
+		enemyAnimation:draw(math.floor(e.x) - e.width / 2, math.floor(e.y) - e.height / 2)
+		g.print(e.life, math.floor(e.x) - e.width / 2, math.floor(e.y) - e.height)
 		g.draw(mouseimg, crosshairX - 16, crosshairY - 16)
 
 		cam:unset()
